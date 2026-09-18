@@ -6,6 +6,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -49,21 +50,26 @@ public class ArrivalGraphqlController {
           OffsetDateTime from = startOfDay.toOffsetDateTime();
           OffsetDateTime until = startOfDay.plusDays(1).toOffsetDateTime();
 
-          Mono<List<Reservation>> arrivalsMono =
-              reservations.findArrivals(propertyId, from, until).collectList();
-          Mono<Map<UUID, Unit>> unitsByIdMono =
-              units.findAllByPropertyId(propertyId)
-                  .collectMap(Unit::id, Function.identity());
+          return reservations.findArrivals(propertyId, from, until)
+              .collectList()
+              .flatMapMany(arrivals -> {
+                List<UUID> unitIds = arrivals.stream()
+                    .map(Reservation::unitId)
+                    .filter(Objects::nonNull)
+                    .distinct()
+                    .toList();
 
-          return Mono.zip(arrivalsMono, unitsByIdMono)
-              .flatMapMany(tuple -> Flux.fromIterable(tuple.getT1())
-                  .map(r -> new Arrival(
-                      r.id(),
-                      r.guestName(),
-                      r.arrival(),
-                      r.unitId() == null ? null : tuple.getT2().get(r.unitId()),
-                      ReservationStatus.valueOf(r.status())
-                  )));
+                return units.findAllByIdIn(unitIds)
+                    .collectMap(Unit::id, Function.identity())
+                    .flatMapMany(unitsById -> Flux.fromIterable(arrivals)
+                        .map(r -> new Arrival(
+                            r.id(),
+                            r.guestName(),
+                            r.arrival(),
+                            r.unitId() == null ? null : unitsById.get(r.unitId()),
+                            ReservationStatus.valueOf(r.status())
+                        )));
+              });
         });
   }
 }
