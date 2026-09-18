@@ -11,6 +11,7 @@ type Query {
     # YOUR TASK: add a query returning today's arrivals for one property.
     # The shape is up to you. Design it as you would for a real backoffice.
     # =====================================================================
+    arrivalsTodayPerProperty(propertyId: ID!): [Arrival!]!
 }
 
 type Property {
@@ -24,4 +25,20 @@ type Unit {
     id: ID!
     label: String!
     floor: Int
+}
+
+enum ReservationStatus {
+    CONFIRMED
+    IN_HOUSE
+    CHECKED_OUT
+    CANCELLED
+    NO_SHOW
+}
+
+type Arrival {
+    id: ID!
+    guestName: String!
+    arrival: DateTime!
+    unit: Unit
+    status: ReservationStatus!
 }
