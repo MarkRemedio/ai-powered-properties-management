@@ -20,6 +20,7 @@ public interface ReservationRepository extends ReactiveCrudRepository<Reservatio
            where property_id = :propertyId
              and arrival >= :from
              and arrival <  :until
+             and status not in ('CANCELLED', 'NO_SHOW')
            order by arrival asc
            """)
     Flux<Reservation> findArrivals(@Param("propertyId") UUID propertyId,
