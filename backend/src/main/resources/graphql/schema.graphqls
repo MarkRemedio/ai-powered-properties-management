@@ -1,0 +1,27 @@
+scalar DateTime
+
+type Query {
+    """
+    WORKED EXAMPLE. Returns every property. Use this as your reference:
+    schema -> resolver (PropertyGraphqlController) -> repository -> React component.
+    """
+    properties: [Property!]!
+
+    # =====================================================================
+    # YOUR TASK: add a query returning today's arrivals for one property.
+    # The shape is up to you. Design it as you would for a real backoffice.
+    # =====================================================================
+}
+
+type Property {
+    id: ID!
+    code: String!
+    name: String!
+    timezone: String!
+}
+
+type Unit {
+    id: ID!
+    label: String!
+    floor: Int
+}

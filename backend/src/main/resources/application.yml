@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: magic-hiring-exercise
+
+  # Reactive datasource used by the application at runtime.
+  r2dbc:
+    url: r2dbc:postgresql://localhost:55432/magic
+    username: magic
+    password: magic
+    pool:
+      initial-size: 5
+      max-size: 20
+
+  # Flyway cannot speak R2DBC, so migrations run over JDBC.
+  # Note the property is "user", not "username".
+  flyway:
+    enabled: true
+    url: jdbc:postgresql://localhost:55432/magic
+    user: magic
+    password: magic
+    locations: classpath:db/migration
+
+  graphql:
+    graphiql:
+      enabled: true          # http://localhost:8080/graphiql
+      path: /graphiql
+    schema:
+      printer:
+        enabled: true
+    path: /graphql
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.springframework.r2dbc.core: debug   # logs the SQL actually issued. Useful.

@@ -1,0 +1,9 @@
+target/
+node_modules/
+dist/
+.idea/
+*.iml
+.vscode/
+.DS_Store
+frontend/src/gql/generated.ts
+*.tsbuildinfo

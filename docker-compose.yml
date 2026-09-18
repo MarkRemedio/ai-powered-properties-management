@@ -1,0 +1,22 @@
+# Postgres for the LIKE MAGIC hiring exercise.
+# Port 55432 on purpose: avoids clashing with a Postgres you may already run on 5432.
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: magic-exercise-db
+    ports:
+      - "55432:5432"
+    environment:
+      POSTGRES_DB: magic
+      POSTGRES_USER: magic
+      POSTGRES_PASSWORD: magic
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U magic -d magic"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    volumes:
+      - magic-exercise-data:/var/lib/postgresql/data
+
+volumes:
+  magic-exercise-data:
