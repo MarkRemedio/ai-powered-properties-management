@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useGetArrivalsTodayPerPropertyQuery } from "./arrivalsApi";
+import { formatOffsetTime } from "../../utils/formatOffsetTime";
 
 export function ArrivalsList({ propertyId }: { propertyId: string }) {
   const { data, isLoading, error } = useGetArrivalsTodayPerPropertyQuery(propertyId, {
@@ -41,7 +42,7 @@ export function ArrivalsList({ propertyId }: { propertyId: string }) {
             primary={arrival.guestName}
             secondary={
               <Stack direction="row" spacing={1} component="span">
-                <span>{new Date(arrival.arrival).toLocaleTimeString()}</span>
+                <span>{formatOffsetTime(arrival.arrival)}</span>
                 <span>&bull;</span>
                 <span>{arrival.unit?.label ?? "No unit assigned"}</span>
               </Stack>
