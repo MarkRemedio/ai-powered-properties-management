@@ -13,6 +13,16 @@ type Query {
     # =====================================================================
 }
 
+type Mutation {
+    createProperty(input: PropertyCreateInput!): Property!
+}
+
+input PropertyCreateInput {
+    code: String!
+    name: String!
+    timezone: String!
+}
+
 type Property {
     id: ID!
     code: String!
