@@ -1,37 +1,52 @@
 spring:
   application:
-    name: magic-hiring-exercise
+    name: ${SPRING_APPLICATION_NAME:magic-hiring-exercise}
+  config:
+    import: optional:file:.env[.properties],optional:file:backend/.env[.properties]
 
   # Reactive datasource used by the application at runtime.
   r2dbc:
-    url: r2dbc:postgresql://localhost:55432/magic
-    username: magic
-    password: magic
+    url: ${SPRING_R2DBC_URL:r2dbc:postgresql://localhost:55432/magic}
+    username: ${SPRING_R2DBC_USERNAME:magic}
+    password: ${SPRING_R2DBC_PASSWORD:magic}
     pool:
-      initial-size: 5
-      max-size: 20
+      initial-size: ${SPRING_R2DBC_POOL_INITIAL_SIZE:5}
+      max-size: ${SPRING_R2DBC_POOL_MAX_SIZE:20}
 
   # Flyway cannot speak R2DBC, so migrations run over JDBC.
   # Note the property is "user", not "username".
   flyway:
-    enabled: true
-    url: jdbc:postgresql://localhost:55432/magic
-    user: magic
-    password: magic
-    locations: classpath:db/migration
+    enabled: ${SPRING_FLYWAY_ENABLED:true}
+    url: ${SPRING_FLYWAY_URL:jdbc:postgresql://localhost:55432/magic}
+    user: ${SPRING_FLYWAY_USER:magic}
+    password: ${SPRING_FLYWAY_PASSWORD:magic}
+    locations: ${SPRING_FLYWAY_LOCATIONS:classpath:db/migration}
 
   graphql:
     graphiql:
-      enabled: true          # http://localhost:8080/graphiql
-      path: /graphiql
+      enabled: ${SPRING_GRAPHQL_GRAPHIQL_ENABLED:true}          # http://localhost:8080/graphiql
+      path: ${SPRING_GRAPHQL_GRAPHIQL_PATH:/graphiql}
     schema:
       printer:
-        enabled: true
-    path: /graphql
+        enabled: ${SPRING_GRAPHQL_SCHEMA_PRINTER_ENABLED:true}
+    path: ${SPRING_GRAPHQL_PATH:/graphql}
+
+  ai:
+    # Tells Spring AI to route the generic ChatClient to OpenAI.
+    model:
+      chat: ${SPRING_AI_MODEL_CHAT:openai}
+
+    # OpenAI specific configuration.
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      chat:
+        options:
+          model: ${SPRING_AI_OPENAI_CHAT_OPTIONS_MODEL:gpt-4o}
+          temperature: ${SPRING_AI_OPENAI_CHAT_OPTIONS_TEMPERATURE:0.7}
 
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
 
 logging:
   level:
-    org.springframework.r2dbc.core: debug   # logs the SQL actually issued. Useful.
+    org.springframework.r2dbc.core: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_R2DBC_CORE:DEBUG}   # logs the SQL actually issued. Useful.
