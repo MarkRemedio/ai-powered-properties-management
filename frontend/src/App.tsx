@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Box, Container, Divider, Paper, Stack, Typography } from "@mui/material";
 import { PropertyPicker } from "./features/properties/PropertyPicker";
+import { ArrivalsList } from "./features/arrivals/ArrivalsList";
 
 export default function App() {
   const [propertyId, setPropertyId] = useState("");
@@ -32,11 +33,9 @@ export default function App() {
           <Typography variant="overline" color="text.secondary">
             Your task
           </Typography>
-          <Typography variant="body2" sx={{ mt: 1 }}>
-            Render today&apos;s arrivals for the selected property here: guest name,
-            arrival time and the label of the assigned unit. Handle loading and
-            error states however you think is reasonable.
-          </Typography>
+          <Box sx={{ mt: 1 }}>
+            <ArrivalsList propertyId={propertyId} />
+          </Box>
         </Paper>
       </Stack>
     </Container>
